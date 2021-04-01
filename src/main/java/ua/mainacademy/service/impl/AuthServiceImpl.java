@@ -1,5 +1,7 @@
 package ua.mainacademy.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,8 +14,6 @@ import ua.mainacademy.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Optional.ofNullable;
 
 @Service
 public class AuthServiceImpl implements UserDetailsService {
