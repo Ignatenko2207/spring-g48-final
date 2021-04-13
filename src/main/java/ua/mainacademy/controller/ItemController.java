@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ua.mainacademy.controller.dto.RequestDTO;
 import ua.mainacademy.model.Item;
 import ua.mainacademy.service.ItemService;
 
@@ -15,15 +16,14 @@ import java.util.List;
 @RestController
 @RequestMapping("item")
 @AllArgsConstructor
-@PreAuthorize("hasAuthority('ADMIN')")
 public class ItemController {
 
     private final ItemService itemService;
 
     @PutMapping
-    public ResponseEntity<Item> create(@RequestBody Item item) {
+    public ResponseEntity<Item> create(@RequestBody RequestDTO<Item> itemRequest) {
         try {
-            return new ResponseEntity<>(itemService.create(item), HttpStatus.OK);
+            return new ResponseEntity<>(itemService.create(itemRequest.getData()), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -48,6 +48,7 @@ public class ItemController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority({'ADMIN', 'CLIENT'})")
     public ResponseEntity<List<Item>> findAll() {
         return new ResponseEntity<>(itemService.findAll(), HttpStatus.OK);
     }

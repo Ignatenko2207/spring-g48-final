@@ -34,6 +34,14 @@ public class User extends BaseEntity {
     @Column(name = "phone")
     private String phone;
 
+    @Column(name = "role")
+    private Role role;
+
+    public static enum Role {
+        ADMIN,
+        CLIENT
+    }
+
     public User(Integer id, String login, String password, String firstName, String lastName, String email, String phone) {
         super.setId(id);
         this.login = login;

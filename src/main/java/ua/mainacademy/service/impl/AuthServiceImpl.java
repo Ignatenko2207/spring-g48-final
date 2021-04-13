@@ -1,7 +1,5 @@
 package ua.mainacademy.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,8 +10,9 @@ import org.springframework.stereotype.Service;
 import ua.mainacademy.dao.UserDAO;
 import ua.mainacademy.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Service
 public class AuthServiceImpl implements UserDetailsService {
@@ -23,19 +22,15 @@ public class AuthServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        List<User> users = userDAO.findAllByLogin(login);
-        if (users.isEmpty()) {
+        User user = userDAO.findFirstByLogin(login);
+        if (isNull(user)) {
             throw new RuntimeException("User not found with login " + login);
         }
-
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        if (users.get(0).getLogin().equals("ignatenko2207")) {
-            authorities.add(new SimpleGrantedAuthority("ADMIN"));
-        }
-
+        List<GrantedAuthority> authorities =
+                List.of(new SimpleGrantedAuthority(user.getRole().name()));
         return org.springframework.security.core.userdetails.User.builder()
-                .username(users.get(0).getLogin())
-                .password(users.get(0).getPassword())
+                .username(user.getLogin())
+                .password(user.getPassword())
                 .authorities(authorities)
                 .build();
     }

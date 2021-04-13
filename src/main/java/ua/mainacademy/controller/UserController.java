@@ -20,7 +20,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+    private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
     @PutMapping
     public ResponseEntity<UserDTO> create(@RequestBody User user) {
@@ -38,20 +38,6 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findOneById(@PathVariable Integer id) {
-        try {
-            return new ResponseEntity<>(userMapper.toDTO(userService.findOneById(id)), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> findAll() {
-        return new ResponseEntity<>(userMapper.toDTOList(userService.findAll()), HttpStatus.OK);
     }
 
     @DeleteMapping("/id")
