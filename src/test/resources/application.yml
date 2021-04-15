@@ -11,7 +11,7 @@ spring:
     password: "248842"
     hikari:
       connectionTimeout: 20000
-      maximumPoolSize: 100
+      maximumPoolSize: 5000
       driver-class-name: "org.postgresql.Driver"
 
 

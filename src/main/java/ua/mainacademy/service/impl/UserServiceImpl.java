@@ -1,6 +1,10 @@
 package ua.mainacademy.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.MongoDatabase;
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
 import org.springframework.stereotype.Service;
 import ua.mainacademy.dao.UserDAO;
 import ua.mainacademy.model.User;
@@ -16,10 +20,17 @@ import static java.util.Objects.nonNull;
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
+    private final MongoDatabase mongoDatabase;
 
     @Override
     public User create(User user) {
         if (isNull(user.getId()) && userDAO.findAllByLogin(user.getLogin()).isEmpty() && userDAO.findAllByEmail(user.getEmail()).isEmpty()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                mongoDatabase.getCollection("USERS").insertOne(Document.parse(objectMapper.writeValueAsString(user)));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
             return userDAO.save(user);
         }
         throw new RuntimeException("User can not be created.");
